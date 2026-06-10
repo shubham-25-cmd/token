@@ -2,9 +2,10 @@ import { generateToken } from "@/lib/generatetoken";
 import { connectdb } from "@/lib/mongodb";
 import userModel from "@/Models/userModel";
 import { RegisterBody } from "@/types/userTypes";
+import { ApiResponse } from "@/types/api.types";
 import { NextRequest, NextResponse } from "next/server";
 
-async function POST(req:NextRequest){
+export async function POST(req:NextRequest){
   try{
     await connectdb()
     const body :RegisterBody= await req.json()
@@ -13,20 +14,16 @@ async function POST(req:NextRequest){
     if(!name||!email||!password){
       return NextResponse.json<ApiResponse>({
         success:false,message:"all fields are required"
-      }),{
-        status:400
-      }
-    };
-    const isExisted = userModel.findOne({email})
-    if(isExisted)return NextResponse.json<ApiResponse>({
-        success:false,message:"all fields are required"
-      }),{
-        status:409
-      }
+      },{status:400})
+    }
+    const isExisted = await userModel.findOne({email})
+    if(isExisted) return NextResponse.json<ApiResponse>({
+      success:false,message:"user already exists"
+    },{status:409})
       const newUser = await userModel.create({
         name,email,password,mobile
       })
-      const token = generateToken({userID:isExisted._id.toString()})
+      const token = generateToken({userID:newUser._id.toString()})
       const response = NextResponse.json<ApiResponse>({
         success:true,message:"user registered sucessfully",data:{
           user:{

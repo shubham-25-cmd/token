@@ -1,6 +1,6 @@
-interface ApiResponse {
-  success:boolean,
-  message:string,
-  data?:object,
-  error?:string
+export interface ApiResponse {
+  success: boolean;
+  message: string;
+  data?: Record<string, unknown> | null;
+  error?: string | null;
 }

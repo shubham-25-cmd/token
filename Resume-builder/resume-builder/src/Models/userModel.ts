@@ -1,27 +1,29 @@
-import mongoose from"mongoose"
-import {IUser} from "@/types/user.types"
+import mongoose, { Document } from "mongoose"
 import bcrypt from "bcrypt"
-import { NextRequest,NextResponse } from "next/server"
 
-interface UserDocument extends Omit<IUser,'_id'>,Document{
-  comparePass(candidatePassword:string):boolean
+interface UserDocument extends Document {
+  name: string
+  email: string
+  password: string
+  mobile?: string
+  comparePass(candidatePassword: string): boolean
 }
 
 const userSchema = new mongoose.Schema<UserDocument>({
   name:{
-    types:String,
+    type: String,
     required:[true, "name is required"],
     trim:true
   },
   email:{
-    types:String,
+    type: String,
     trim:true,
     unique:true,
     required:[true,"email is required"]
 
   },
   password:{
-    types:String,
+    type: String,
     required:[true,"password is required"],
     minlength:[6,"min 6 character is required"]
   },
