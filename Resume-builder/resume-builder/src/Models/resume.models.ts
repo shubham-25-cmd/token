@@ -1,46 +1,43 @@
 import { IResume } from "@/types/resume.types";
-import mongoose from "mongoose";
-import { start } from "node:repl";
+import mongoose, { mongo } from "mongoose";
 
 const resumeSchema = new mongoose.Schema<IResume>(
   {
-    userId: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
     title: {
       type: String,
       default: "",
     },
-
     summary: {
       type: String,
       default: "",
     },
-    personalInfo:{
-      type:{
-        fullname:String,
-        email:String,
-        mobile:String,
-        location:String,
-        github:String,
-        portfolio:String
-      }
+    personalInfo: {
+      type: {
+        fullname: String,
+        email: String,
+        mobile: String,
+        location: String,
+        github: String,
+        portfolio: String,
+      },
+      default: {},
     },
-    education:{
-      type:[{
-        institute:String,
-        degree:String,
-        startDate:Date,
-        endDate:Date
-
-      }
+    education: {
+      type: [
+        {
+          institute: String,
+          degree: String,
+          startDate: String,
+          endDate: String,
+        },
       ],
       default: [],
     },
-
     workExperience: {
       type: [
         {
@@ -53,7 +50,6 @@ const resumeSchema = new mongoose.Schema<IResume>(
       ],
       default: [],
     },
-
     projects: {
       type: [
         {
@@ -66,12 +62,10 @@ const resumeSchema = new mongoose.Schema<IResume>(
       ],
       default: [],
     },
-
     skills: {
       type: [String],
       default: [],
     },
-
     certifications: {
       type: [String],
       default: [],
@@ -82,8 +76,6 @@ const resumeSchema = new mongoose.Schema<IResume>(
   }
 );
 
-const Resume =
-  mongoose.models.Resume ||
-  mongoose.model<IResume>("Resume", resumeSchema);
-
-export default Resume;
+const ResumeModel =
+  mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
+export default ResumeModel;

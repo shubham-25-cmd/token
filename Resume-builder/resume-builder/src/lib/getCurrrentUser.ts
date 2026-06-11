@@ -1,22 +1,18 @@
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/generatetoken"; // reuse the JWT utility
+import { verifyToken } from "./jwt";
 
 export async function getCurrentUser() {
-  const cookieStore = await cookies();
+    const cookieStore = await cookies();
 
-  const token = cookieStore.get("token")?.value;
+    const token = cookieStore.get('token')?.value;
 
-  if (!token) {
-    throw new Error("Token not found");
-  }
+    if (!token) throw new Error("Token not found");
 
-  const decoded = verifyToken(token);
+    const decode = verifyToken(token);
+    console.log("decode value", decode)
 
-  console.log("decoded value:", decoded);
+    if (!decode) throw new Error("unauthorize");
 
-  if (!decoded) {
-    throw new Error("Unauthorized");
-  }
+    return decode.userId
 
-  return (decoded as { userID?: string }).userID;
 }

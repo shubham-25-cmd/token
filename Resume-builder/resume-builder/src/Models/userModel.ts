@@ -1,48 +1,48 @@
-import mongoose, { Document } from "mongoose"
-import bcrypt from "bcrypt"
+import { IUser } from "@/types/user.types";
+import mongoose, { Document } from "mongoose";
+import bcrypt from "bcrypt";
 
-interface UserDocument extends Document {
-  name: string
-  email: string
-  password: string
-  mobile?: string
-  comparePass(candidatePassword: string): boolean
+interface UserDocument extends Omit<IUser, "_id">, Document {
+  comparePass(candidatePassword: string): boolean;
 }
 
-const userSchema = new mongoose.Schema<UserDocument>({
-  name:{
-    type: String,
-    required:[true, "name is required"],
-    trim:true
+let userSchema = new mongoose.Schema<UserDocument>(
+  {
+    name: {
+      type: String,
+      trim: true,
+      required: [true, "Name is required"],
+    },
+    email: {
+      type: String,
+      trim: true,
+      required: [true, "Email is required"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Name is required"],
+      minlength: [6, "Min 6 characters required"],
+    },
+    mobile: {
+      type: String,
+      minlength: [10, "min 10 characters required"],
+      maxlength: [10, "max 10 characters required"],
+    },
   },
-  email:{
-    type: String,
-    trim:true,
-    unique:true,
-    required:[true,"email is required"]
-
-  },
-  password:{
-    type: String,
-    required:[true,"password is required"],
-    minlength:[6,"min 6 character is required"]
-  },
-  mobile:{
-    type:String,
-    minlength:[10,"min 10 character is required"],
-    maxlength:[10,"max 10 character is required"]
+  {
+    timestamps: true,
   }
+);
 
-},{
-  timestamps:true
-})
+userSchema.pre("save", function (): void {
+  if (!this.isModified("password")) return;
+  this.password = bcrypt.hashSync(this.password, 10);
+});
 
-userSchema.pre('save',function():void{
-  if(!this.isModified('password')) return
-  this.password= bcrypt.hashSync(this.password,10)
-})
-userSchema.methods.comparePass = function(candidatePassword:string):boolean{
-  return bcrypt.compareSync(candidatePassword,this.password)
-}
-const userModel = mongoose.model('User',userSchema)
-export default userModel
+userSchema.methods.comparePass = function (candidatePassword: string): boolean {
+  return bcrypt.compareSync(candidatePassword, this.password);
+};
+
+const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
+export default UserModel;

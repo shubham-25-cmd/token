@@ -1,94 +1,70 @@
-import { generateToken } from "@/lib/generatetoken";
-import { connectdb } from "@/lib/mongodb";
-import userModel from "@/Models/userModel";
-import { LoginBody } from "@/types/userTypes";
+import { generateToken } from "@/lib/jwt";
+import { connectDB } from "@/lib/mongodb";
+import UserModel from "@/models/User.model";
+import { ApiResponse } from "@/types/api.types";
+import { LoginBody } from "@/types/user.types";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
-  try {
-    await connectdb();
+    try {
 
-    const body: LoginBody = await req.json();
+        await connectDB()
 
-    const { email, password } = body;
+        let body: LoginBody = await req.json()
 
-    if (!email || !password) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Email and password are required",
-        },
-        { status: 400 }
-      );
+        let { email, password } = body;
+
+        if (!email || !password) {
+            return NextResponse.json<ApiResponse>({
+                success: false, message: "All fields are required",
+            }, {
+                status: 400
+            })
+        };
+
+        let isExisted = await UserModel.findOne({ email })
+
+        if (!isExisted) return NextResponse.json<ApiResponse>({
+            success: false, message: "User not found",
+        }, {
+            status: 404
+        })
+
+        let matchPass = isExisted.comparePass(password)
+
+        if (!matchPass) return NextResponse.json<ApiResponse>({
+            success: false, message: "Invalid credentials",
+        }, {
+            status: 401
+        })
+
+
+        let token = generateToken({ userId: isExisted._id.toString() })
+
+        let response = NextResponse.json<ApiResponse>({
+            success: true, message: "User registered successfully", data: {
+                user: {
+                    _id: isExisted._id,
+                    name: isExisted.name,
+                    email: isExisted.email
+                }
+            }
+        }, { status: 201 })
+
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 1000
+        })
+
+        return response
+
+    } catch (error) {
+        console.log("error in register api", error)
+        return NextResponse.json<ApiResponse>({
+            success: false, message: "Something went wrong", error: {
+                error
+            }
+        }, { status: 500 })
     }
-
-    const user = await userModel.findOne({ email });
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid credentials",
-        },
-        { status: 401 }
-      );
-    }
-
-    const isPasswordMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
-
-    if (!isPasswordMatch) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid credentials",
-        },
-        { status: 401 }
-      );
-    }
-
-    const token = generateToken({
-      userID: user._id.toString(),
-      email: user.email,
-    });
-
-    const response = NextResponse.json(
-      {
-        success: true,
-        message: "Login successful",
-        data: {
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            mobile: user.mobile,
-          },
-        },
-      },
-      { status: 200 }
-    );
-
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60, // 1 hour
-      path: "/",
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error in login API:", error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Something went wrong",
-      },
-      { status: 500 }
-    );
-  }
 }
