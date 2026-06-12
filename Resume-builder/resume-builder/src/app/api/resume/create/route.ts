@@ -1,17 +1,17 @@
-import { connectdb } from "@/lib/mongodb";
+import { connectDB } from "@/lib/mongodb";
 import { getCurrentUser } from "@/lib/getCurrrentUser";
-import ResumeModel from "@/Models/resume.models";
+import ResumeModel from "@/models/resume.models";
 import { ApiResponse } from "@/types/api.types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    await connectdb();
+    await connectDB();
 
     const userId = await getCurrentUser();
 
     const newResume = await ResumeModel.create({
-      userId,
+      user_id: userId,
       title: "",
       summary: "",
       personalInfo: {

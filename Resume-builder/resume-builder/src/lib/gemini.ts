@@ -4,13 +4,12 @@ const ai = new GoogleGenAI({
   apiKey:process.env.GEMINI_API_KEY
 });
 
- export async function generateAiRespose(prompt:string) {
+export async function generateAiContent(prompt:string) {
   const response = await ai.models.generateContent({
     model: "gemini-3.5-flash",
     contents: prompt,
   });
 
   console.log(response.text);
+  return response.text;
 }
-
-main();
