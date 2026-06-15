@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Project1
+
+A small Next.js starter application using the App Router and Tailwind CSS.
+
+## Overview
+
+This project is a minimal Next.js app built as a learning template. It demonstrates an App Router layout, a simple landing page, and a nested dynamic route.
+
+## Features
+
+- Next.js 16.2.7
+- React 19.2.4
+- Tailwind CSS v4
+- App Router structure
+- Example dynamic route at `/home/[id]`
+- ESLint configured with `eslint-config-next`
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+cd NEXTJS/project1
+npm install
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` to view the app.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Build and Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build the application:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Start the production server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+- `src/app/page.js` — main landing page
+- `src/app/layout.js` — root layout for the app
+- `src/app/home/page.js` — nested route example
+- `src/app/home/[id]/page.js` — dynamic route example
+- `src/app/globals.css` — Tailwind CSS setup and global styles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This repository is a good starter for learning Next.js app routing and component structure. Customize the pages and components to extend it into a full application.

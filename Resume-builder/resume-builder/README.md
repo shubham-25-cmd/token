@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resume Builder
 
-## Getting Started
+A Next.js resume builder application with AI-powered content generation, user authentication, and MongoDB persistence.
 
-First, run the development server:
+## Overview
+
+This project enables users to register, log in, and generate resume content using Google Gemini AI. It includes backend API routes for creating resumes, generating ATS-friendly descriptions, and storing user data in MongoDB.
+
+## Features
+
+- Next.js 16.2.7 + React 19.2.4
+- TypeScript support
+- Tailwind CSS v4
+- Google Gemini AI integration via `@google/genai`
+- MongoDB persistence with Mongoose
+- Authentication with JWT cookies
+- Resume creation and resume content generation APIs
+
+## Prerequisites
+
+- Node.js 20 or newer
+- npm
+- MongoDB instance or Atlas cluster
+- Google Gemini API key
+
+## Setup
+
+```bash
+cd Resume-builder/resume-builder
+npm install
+```
+
+Create a `.env.local` file in the project root with:
+
+```env
+MONGO_URI=mongodb://0.0.0.0/resume-builder
+GEMINI_API_KEY=your_google_gemini_api_key
+```
+
+## Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build and Start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## API Routes
 
-To learn more about Next.js, take a look at the following resources:
+- `POST /api/auth/register` — register a new user
+- `POST /api/auth/login` — log in and issue JWT cookie
+- `POST /api/resume/create` — create or save resume data
+- `POST /api/ai/generate-experience` — generate work experience descriptions
+- `POST /api/ai/generate-project-description` — generate project descriptions
+- `POST /api/ai/generate-skills` — generate skills content
+- `POST /api/ai/genratesummary` — generate resume summary text
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/app/page.tsx` — main application entry page
+- `src/app/layout.tsx` — shared layout and metadata
+- `src/app/api` — route handlers for auth, resume, and AI generation
+- `src/lib/gemini.ts` — Gemini AI integration helper
+- `src/lib/mongodb.ts` — MongoDB connection helper
+- `src/models` — user and resume Mongoose models
+- `src/types` — TypeScript interfaces for API payloads and domain models
 
-## Deploy on Vercel
+## Notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This app is built for building and generating resume content with AI assistance. Be sure to configure `MONGO_URI` and `GEMINI_API_KEY` before running the app.
