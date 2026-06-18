@@ -21,3 +21,7 @@ export interface GenerateSummaryBody {
   skills: string | string[];
   jobTitle: string;
 }
+
+export interface ImproveContentBody{
+  content:string
+} 
